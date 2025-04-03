@@ -1,7 +1,7 @@
 # Конфигурационные файлы с секретами
-kong/config/kong.env
-kong/certs/
-kong/plugins/
+config/kong.env
+certs/
+plugins/
 
 # Docker
 .dockerignore
