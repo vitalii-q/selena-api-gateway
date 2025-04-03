@@ -1,4 +1,6 @@
 # Конфигурационные файлы с секретами
+/config/.kong_env
+/config/kong.yaml
 config/kong.env
 certs/
 plugins/
