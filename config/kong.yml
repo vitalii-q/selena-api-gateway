@@ -1,0 +1,21 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: users-list-service
+    url: http://users-service:9065
+    routes:
+      - name: users
+        paths:
+          - /users
+
+  - name: users-id-service
+    url: http://users-service:9065
+    routes:
+      - name: get-user-by-id
+        methods: [GET]
+        paths:
+          - ~/users/([a-f0-9\-]+)
+        strip_path: false
+        regex_priority: 1
+
