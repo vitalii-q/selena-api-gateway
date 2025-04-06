@@ -32,3 +32,19 @@ services:
           - ~/users/([a-f0-9\-]+)
         strip_path: false
         regex_priority: 2
+
+plugins:
+      - name: jwt
+        config:
+          anonymous: <consumer_id>  # Если вы используете анонимного потребителя
+          secret_is_base64: false  # Если ключ - это строка (не base64)
+          claims_to_verify:  # Если нужно проверить какие-то claims
+            - exp  # Пример: проверка срока действия токена
+          run_on_preflight: true  # Обработка CORS запросов
+
+      - name: oauth2
+        config:
+          enable_client_credentials: true
+          enable_authorization_code: true
+          scopes: ["read", "write"]  # Передаем в виде массива
+          provision_key: "some_provision_key"
