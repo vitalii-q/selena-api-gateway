@@ -9,7 +9,7 @@ services:
         paths:
           - /users
 
-  - name: users-id-service
+  - name: users-service
     url: http://users-service:9065
     routes:
       - name: get-user-by-id
@@ -21,6 +21,13 @@ services:
 
       - name: update-user-by-id
         methods: [PUT]
+        paths:
+          - ~/users/([a-f0-9\-]+)
+        strip_path: false
+        regex_priority: 2
+
+      - name: delete-user-by-id
+        methods: [DELETE]
         paths:
           - ~/users/([a-f0-9\-]+)
         strip_path: false
