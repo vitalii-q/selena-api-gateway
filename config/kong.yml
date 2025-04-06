@@ -2,7 +2,7 @@ _format_version: "3.0"
 _transform: true
 
 services:
-  - name: users-list-service
+  - name: start-page
     url: http://users-service:9065
     routes:
       - name: users
@@ -19,3 +19,9 @@ services:
         strip_path: false
         regex_priority: 1
 
+      - name: update-user-by-id
+        methods: [PUT]
+        paths:
+          - ~/users/([a-f0-9\-]+)
+        strip_path: false
+        regex_priority: 2
