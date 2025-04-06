@@ -1,8 +1,8 @@
-FROM kong/kong-gateway:latest
+FROM kong/kong-gateway:3.9
 
-RUN apt-get update && apt-get install -y bash
+USER root
+
+RUN apt-get update && apt-get install -y curl bash dnsutils iputils-ping
 
 # Копирование конфигурации
 COPY ./config/kong.conf /etc/kong/kong.conf
-
-RUN apk update && apk add curl
