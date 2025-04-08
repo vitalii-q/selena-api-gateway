@@ -8,6 +8,8 @@ services:
       - name: users
         paths:
           - /users
+        plugins:
+          - name: jwt
 
   - name: users-service
     url: http://users-service:9065
@@ -33,6 +35,25 @@ services:
         strip_path: false
         regex_priority: 2
 
+      - name: users-service-routes
+        paths:
+          - ~/users/oauth2/token
+        strip_path: false
+        methods:
+          - GET
+          - POST
+        regex_priority: 10
+        plugins:
+          - name: oauth2
+            config:
+              enable_client_credentials: true
+              enable_authorization_code: true
+              scopes:
+                - read
+                - write
+              provision_key: "some_provision_key"
+              mandatory_scope: true
+
 plugins:
       - name: jwt
         config:
@@ -42,9 +63,6 @@ plugins:
             - exp  # Пример: проверка срока действия токена
           run_on_preflight: true  # Обработка CORS запросов
 
-      - name: oauth2
+      - name: file-log
         config:
-          enable_client_credentials: true
-          enable_authorization_code: true
-          scopes: ["read", "write"]  # Передаем в виде массива
-          provision_key: "some_provision_key"
+          path: /tmp/kong-access.log
