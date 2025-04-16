@@ -4,5 +4,9 @@ USER root
 
 RUN apt-get update && apt-get install -y curl bash dnsutils iputils-ping
 
+#RUN chown -R kong:kong /usr/local/kong/ssl
+
 # Копирование конфигурации
-COPY ./config/kong.conf /etc/kong/kong.conf
+#COPY ./config/kong.conf /etc/kong/kong.conf
+
+USER kong
