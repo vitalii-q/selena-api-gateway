@@ -89,7 +89,7 @@ routes:
           global_credentials: false
           accept_http_if_already_terminated: true
 
-  - name: protected-route
+  - name: protected-route # test oauth2 route 
     paths:
       - /protected
     strip_path: false
