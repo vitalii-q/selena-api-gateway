@@ -11,6 +11,9 @@ services:
         plugins:
           - name: jwt
 
+  - name: dummy-service
+    url: http://localhost:1234
+
   - name: users-service
     url: http://users-service:9065
     routes:
@@ -46,6 +49,8 @@ routes:
       name: users-service
 
   - name: kong-oauth2-authorize
+    service:
+      name: dummy-service
     paths:
       - /oauth2/authorize
     methods:
@@ -59,27 +64,30 @@ routes:
           scopes:
             - read
             - write
-          provision_key: "some_provision_key"
+          provision_key: "selena_provision_key"
           mandatory_scope: true
           global_credentials: false
           accept_http_if_already_terminated: true
 
-          # edirect_uris:
-          #- http://localhost:8080/cb
-          #- name: jwt
-          #  config:
-          #    #anonymous: <consumer_id>  # Если вы используете анонимного потребителя
-          #    secret_is_base64: false  # Если ключ - это строка (не base64)
-          #    claims_to_verify:  # Если нужно проверить какие-то claims
-          #      - exp  # Пример: проверка срока действия токена
-          #    run_on_preflight: true  # Обработка CORS запросов
-
   - name: kong-oauth2-token
+    service:
+      name: dummy-service
     paths:
       - /oauth2/token
     methods:
       - POST
     strip_path: false
+    plugins:
+      - name: oauth2
+        config:
+          enable_authorization_code: true
+          provision_key: "selena_provision_key"
+          scopes:
+            - read
+            - write
+          mandatory_scope: true
+          global_credentials: false
+          accept_http_if_already_terminated: true
 
   - name: protected-route
     paths:
@@ -94,7 +102,7 @@ routes:
           scopes:
             - read
             - write
-          provision_key: "some_provision_key"
+          provision_key: "selena_provision_key"
           mandatory_scope: true
           global_credentials: false
 
@@ -112,16 +120,16 @@ plugins:
     config:
       path: /tmp/kong-access.log
 
-  - name: oauth2
-    service: users-service
-    config:
-      scopes:
-        - email
-      mandatory_scope: true
-      enable_authorization_code: true
-      provision_key: my-provision-key
-      token_expiration: 7200
-      accept_http_if_already_terminated: true
+  #- name: oauth2
+    #service: users-service
+    #config:
+    #  scopes:
+    #    - email
+    #  mandatory_scope: true
+    #  enable_authorization_code: true
+    #  provision_key: selena_provision_key
+    #  token_expiration: 7200
+    #  accept_http_if_already_terminated: true
 
 
 
@@ -145,3 +153,5 @@ plugins:
 #  authenticated_userid — это ID пользователя из твоей базы данных, а не ID consumer-а.
 
 #  у route должна быть привязка к service
+
+# client_secret - получи из /consumers/<consumer>/oauth2
