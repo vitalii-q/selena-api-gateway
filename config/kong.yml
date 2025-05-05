@@ -35,18 +35,72 @@ services:
         strip_path: false
         regex_priority: 2
 
-      - name: users-oauth2-token
-        paths:
-          - /oauth2/token
-        strip_path: false
-        methods:
-          - GET
-          - POST
-        regex_priority: 10
+routes:
+  - name: oauth2-authenticate
+    paths:
+      - /users/oauth2/authenticate
+    methods:
+      - POST
+    strip_path: false
+    service:
+      name: users-service
+
+  - name: kong-oauth2-authorize
+    paths:
+      - /oauth2/authorize
+    methods:
+    #  - GET
+      - POST
+    strip_path: false
+    plugins:
+      - name: oauth2
+        config:
+          enable_authorization_code: true
+          scopes:
+            - read
+            - write
+          provision_key: "some_provision_key"
+          mandatory_scope: true
+          global_credentials: false
+          accept_http_if_already_terminated: true
+
+          # edirect_uris:
+          #- http://localhost:8080/cb
+          #- name: jwt
+          #  config:
+          #    #anonymous: <consumer_id>  # Если вы используете анонимного потребителя
+          #    secret_is_base64: false  # Если ключ - это строка (не base64)
+          #    claims_to_verify:  # Если нужно проверить какие-то claims
+          #      - exp  # Пример: проверка срока действия токена
+          #    run_on_preflight: true  # Обработка CORS запросов
+
+  - name: kong-oauth2-token
+    paths:
+      - /oauth2/token
+    methods:
+      - POST
+    strip_path: false
+
+  - name: protected-route
+    paths:
+      - /protected
+    strip_path: false
+    service:
+      name: users-service
+    plugins:
+      - name: oauth2
+        config:
+          enable_authorization_code: true
+          scopes:
+            - read
+            - write
+          provision_key: "some_provision_key"
+          mandatory_scope: true
+          global_credentials: false
 
 consumers:
-  - id: "1a2c6b27-a005-408d-8d59-3cb82ddadff3"
-    username: oauth2-client
+  - username: ui-user
+    id: "1a2c6b27-a005-408d-8d59-3cb82ddadff3"
     custom_id: oauth2-client-id
     jwt_secrets:
       - key: my-key
@@ -58,39 +112,17 @@ plugins:
     config:
       path: /tmp/kong-access.log
 
+  - name: oauth2
+    service: users-service
+    config:
+      scopes:
+        - email
+      mandatory_scope: true
+      enable_authorization_code: true
+      provision_key: my-provision-key
+      token_expiration: 7200
+      accept_http_if_already_terminated: true
 
-routes:
-  - name: users-oauth2-authorize # для UI
-    paths:
-      - /users/oauth2/authorize
-    methods:
-      - GET
-      - POST
-    strip_path: false
-    regex_priority: 10
-    service:
-      name: users-service # object
-    plugins:
-      - name: oauth2
-        config:
-          enable_authorization_code: true
-          enable_client_credentials: true
-          scopes:
-            - read
-            - write
-          provision_key: "some_provision_key"
-          mandatory_scope: true
-          global_credentials: true
-          accept_http_if_already_terminated: true # Разрешаем http запросы (только dev)
-          #redirect_uris:
-          #- http://localhost:8080/cb
-      #- name: jwt
-      #  config:
-      #    #anonymous: <consumer_id>  # Если вы используете анонимного потребителя
-      #    secret_is_base64: false  # Если ключ - это строка (не base64)
-      #    claims_to_verify:  # Если нужно проверить какие-то claims
-      #      - exp  # Пример: проверка срока действия токена
-      #    run_on_preflight: true  # Обработка CORS запросов
 
 
 
