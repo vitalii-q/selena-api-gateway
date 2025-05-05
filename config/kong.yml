@@ -60,7 +60,7 @@ plugins:
 
 
 routes:
-  - name: users-oauth2-authorize
+  - name: users-oauth2-authorize # для UI
     paths:
       - /users/oauth2/authorize
     methods:
@@ -82,10 +82,34 @@ routes:
           mandatory_scope: true
           global_credentials: true
           accept_http_if_already_terminated: true # Разрешаем http запросы (только dev)
-      - name: jwt
-        config:
-          #anonymous: <consumer_id>  # Если вы используете анонимного потребителя
-          secret_is_base64: false  # Если ключ - это строка (не base64)
-          claims_to_verify:  # Если нужно проверить какие-то claims
-            - exp  # Пример: проверка срока действия токена
-          run_on_preflight: true  # Обработка CORS запросов
+          #redirect_uris:
+          #- http://localhost:8080/cb
+      #- name: jwt
+      #  config:
+      #    #anonymous: <consumer_id>  # Если вы используете анонимного потребителя
+      #    secret_is_base64: false  # Если ключ - это строка (не base64)
+      #    claims_to_verify:  # Если нужно проверить какие-то claims
+      #      - exp  # Пример: проверка срока действия токена
+      #    run_on_preflight: true  # Обработка CORS запросов
+
+
+
+# client_id - генерируется отдельно, когда создаёшь oauth2 credentials для consumer-а. 
+# По ссылке http://localhost:8001/consumers/oauth2-client/oauth2 пожно посмотреть credentials consumer-а и там ячейка client_id.
+
+#  response_type - это просто строка, ты сам задаёшь её в запросе, в зависимости от типа flow. У тебя включён enable_authorization_code, значит — code.
+
+#  scope - Это те значения, которые ты задал при включении OAuth2-плагина на маршруте (scopes): указывать read
+
+#  provision_key - Из конфигурации OAuth2-плагина:
+#  "provision_key": "some_provision_key"
+
+#  redirect_uri - в credentials от consumer:
+
+# "redirect_uris": [
+#    "http://localhost/callback"
+#  ]
+
+#  authenticated_userid — это ID пользователя из твоей базы данных, а не ID consumer-а.
+
+#  у route должна быть привязка к service

@@ -2,7 +2,7 @@
 
 # Синхронизация конфигурации с Kong через deck
 echo "Syncing Kong config with deck..."
-deck gateway sync kong.yml
+deck gateway sync ./config/kong.yml
 
 # Проверяем успешность синхронизации
 if [ $? -ne 0 ]; then
