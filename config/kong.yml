@@ -105,6 +105,7 @@ routes:
           provision_key: "selena_provision_key"
           mandatory_scope: true
           global_credentials: false
+          accept_http_if_already_terminated: true
 
 consumers:
   - username: ui-user
