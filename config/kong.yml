@@ -8,8 +8,8 @@ services:
       - name: users
         paths:
           - /users
-        plugins:
-          - name: jwt
+        #plugins:
+        #  - name: jwt
 
   - name: dummy-service
     url: http://localhost:1234
@@ -66,7 +66,7 @@ routes:
             - write
           provision_key: "selena_provision_key"
           mandatory_scope: true
-          global_credentials: false
+          global_credentials: true
           accept_http_if_already_terminated: true
 
   - name: kong-oauth2-token
@@ -86,7 +86,7 @@ routes:
             - read
             - write
           mandatory_scope: true
-          global_credentials: false
+          global_credentials: true
           accept_http_if_already_terminated: true
 
   - name: protected-route # test oauth2 route 
@@ -104,7 +104,7 @@ routes:
             - write
           provision_key: "selena_provision_key"
           mandatory_scope: true
-          global_credentials: false
+          global_credentials: true
           accept_http_if_already_terminated: true
 
 consumers:
