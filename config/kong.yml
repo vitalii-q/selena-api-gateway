@@ -8,11 +8,21 @@ services:
       - name: users
         paths:
           - /users
-        #plugins:
-        #  - name: jwt
 
   - name: dummy-service
     url: http://localhost:1234
+    plugins:
+      - name: oauth2
+        config:
+          enable_authorization_code: true
+          scopes:
+            - read
+            - write
+          provision_key: "selena_provision_key"
+          mandatory_scope: true
+          global_credentials: true
+          accept_http_if_already_terminated: true
+          #token_expiration: 60480000
 
   - name: users-service
     url: http://users-service:9065
@@ -57,17 +67,6 @@ routes:
     #  - GET
       - POST
     strip_path: false
-    plugins:
-      - name: oauth2
-        config:
-          enable_authorization_code: true
-          scopes:
-            - read
-            - write
-          provision_key: "selena_provision_key"
-          mandatory_scope: true
-          global_credentials: true
-          accept_http_if_already_terminated: true
 
   - name: kong-oauth2-token
     service:
@@ -77,17 +76,17 @@ routes:
     methods:
       - POST
     strip_path: false
-    plugins:
-      - name: oauth2
-        config:
-          enable_authorization_code: true
-          provision_key: "selena_provision_key"
-          scopes:
-            - read
-            - write
-          mandatory_scope: true
-          global_credentials: true
-          accept_http_if_already_terminated: true
+
+  - name: test-route
+    paths:
+      - /test
+    strip_path: false
+    service:
+      name: users-service
+    #plugins:
+    #- name: oauth2
+    #  enabled: false
+    #  provision_key: "selena_provision_key"
 
   - name: protected-route # test oauth2 route 
     paths:
@@ -117,7 +116,7 @@ consumers:
         algorithm: HS256
 
 plugins:
-  - name: file-log
+  - name: file-log # kong logs
     config:
       path: /tmp/kong-access.log
 
