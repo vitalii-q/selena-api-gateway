@@ -9,7 +9,7 @@ services:
         paths:
           - /users
 
-  - name: dummy-service
+  - name: auth-service
     url: http://localhost:1234
     plugins:
       - name: oauth2
@@ -60,7 +60,7 @@ routes:
 
   - name: kong-oauth2-authorize
     service:
-      name: dummy-service
+      name: auth-service
     paths:
       - /oauth2/authorize
     methods:
@@ -70,7 +70,7 @@ routes:
 
   - name: kong-oauth2-token
     service:
-      name: dummy-service
+      name: auth-service
     paths:
       - /oauth2/token
     methods:
