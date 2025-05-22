@@ -28,7 +28,7 @@ services:
     url: http://users-service:9065
     routes:
       - name: add-user
-        methods: [GET]
+        methods: [POST]
         paths:
           - ~/users
         strip_path: false
