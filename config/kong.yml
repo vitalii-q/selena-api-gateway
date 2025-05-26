@@ -54,10 +54,46 @@ services:
         strip_path: false
         regex_priority: 2
 
+  - name: hotels-service
+    url: http://hotels-service:9064
+    routes:
+      - name: add-hotel
+        methods: [POST]
+        paths:
+          - /hotels
+        strip_path: false
+
+      - name: get-all-hotels
+        methods: [GET]
+        paths:
+          - /hotels
+        strip_path: false
+
+      - name: get-hotel-by-id
+        methods: [GET]
+        paths:
+          - ~/hotels/([a-f0-9\-]+)
+        strip_path: false
+        regex_priority: 1
+
+      - name: update-hotel-by-id
+        methods: [PUT]
+        paths:
+          - ~/hotels/([a-f0-9\-]+)
+        strip_path: false
+        regex_priority: 2
+
+      - name: delete-hotel-by-id
+        methods: [DELETE]
+        paths:
+          - ~/hotels/([a-f0-9\-]+)
+        strip_path: false
+        regex_priority: 2
+
   - name: bookings-service
     url: http://bookings-service:9066/api
     routes:
-      - name: create-booking
+      - name: add-booking
         methods: [POST]
         paths:
           - /bookings
